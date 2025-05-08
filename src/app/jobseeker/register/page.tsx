@@ -34,9 +34,13 @@ export default function JobseekerRegisterPage() {
         throw new Error(errorData.message || "Бүртгэл амжилтгүй боллоо");
       }
 
-      router.push("/login?message=Бүртгэл амжилттай! Та нэвтэрнэ үү.");
+      router.push(
+        "/jobseeker/login?message=Бүртгэл амжилттай! Та нэвтэрнэ үү."
+      );
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Ямар нэг зүйл буруу боллоо");
+      setError(
+        error instanceof Error ? error.message : "Ямар нэг зүйл буруу боллоо"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +61,6 @@ export default function JobseekerRegisterPage() {
             Нэвтрэх
           </Link>
         </p>
-        
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -145,7 +148,7 @@ export default function JobseekerRegisterPage() {
               </div>
             </div>
 
-             <div>
+            <div>
               <label
                 htmlFor="phoneNumber"
                 className="block text-sm font-medium text-gray-700"
@@ -164,11 +167,12 @@ export default function JobseekerRegisterPage() {
               <p className="mt-2 text-center text-sm text-gray-600">
                 Эсвэл ажил олгогчоор{" "}
                 <Link
-                    href="/employer/register"
-                    className="font-medium text-indigo-600 hover:text-indigo-500">
-                     бүртгүүлэх?
+                  href="/employer/register"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
+                  бүртгүүлэх?
                 </Link>
-               </p>
+              </p>
             </div>
 
             <div>
@@ -185,4 +189,4 @@ export default function JobseekerRegisterPage() {
       </div>
     </div>
   );
-} 
+}

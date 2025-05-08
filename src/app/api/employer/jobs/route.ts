@@ -1,88 +1,118 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { JobStatus } from "@prisma/client";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { message: "Нэвтрээгүй байна" },
-        { status: 401 }
-      );
+    if (!session?.user) {
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email! },
-      include: { company: true },
+    const { searchParams } = new URL(request.url);
+    const includeApplications = searchParams.get("include") === "applications";
+
+    // Get the company associated with the user
+    const company = await prisma.company.findFirst({
+      where: {
+        users: {
+          some: {
+            id: session.user.id,
+          },
+        },
+      },
     });
 
-    if (!user || !user.company) {
-      return NextResponse.json(
-        { message: "Компанийн мэдээлэл олдсонгүй" },
-        { status: 404 }
-      );
+    if (!company) {
+      return new NextResponse("Company not found", { status: 404 });
     }
 
     const jobs = await prisma.job.findMany({
-      where: { companyId: user.company.id },
-      orderBy: { createdAt: "desc" },
+      where: {
+        companyId: company.id,
+      },
+      include: includeApplications
+        ? {
+            applications: {
+              include: {
+                user: {
+                  select: {
+                    name: true,
+                    email: true,
+                  },
+                },
+                cv: {
+                  select: {
+                    fileName: true,
+                    fileUrl: true,
+                  },
+                },
+              },
+              orderBy: {
+                createdAt: "desc",
+              },
+            },
+          }
+        : undefined,
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return NextResponse.json(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);
-    return NextResponse.json({ message: "Алдаа гарлаа" }, { status: 500 });
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user) {
-      return NextResponse.json(
-        { message: "Нэвтрээгүй байна" },
-        { status: 401 }
-      );
+    if (!session?.user) {
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email! },
-      include: { company: true },
+    const body = await request.json();
+    const { title, description, requirements, location, salary } = body;
+
+    if (!title || !description || !location) {
+      return new NextResponse("Missing required fields", { status: 400 });
+    }
+
+    // Get the company associated with the user
+    const company = await prisma.company.findFirst({
+      where: {
+        users: {
+          some: {
+            id: session.user.id,
+          },
+        },
+      },
     });
 
-    if (!user || !user.company) {
-      return NextResponse.json(
-        { message: "Компанийн мэдээлэл олдсонгүй" },
-        { status: 404 }
-      );
+    if (!company) {
+      return new NextResponse("Company not found", { status: 404 });
     }
-
-    const body = await req.json();
-    const { title, description, location, salary, requirements } = body;
 
     const job = await prisma.job.create({
       data: {
         title,
         description,
+        requirements,
         location,
         salary,
-        requirements,
-        status: JobStatus.ACTIVE,
-        companyId: user.company.id,
+        companyId: company.id,
       },
     });
 
-    return NextResponse.json(job, { status: 201 });
+    return NextResponse.json(job);
   } catch (error) {
-    console.error("Error creating job:", error);
-    return NextResponse.json(
-      { message: "Ажлын байр үүсгэхэд алдаа гарлаа" },
-      { status: 500 }
-    );
+    console.error("[JOBS_POST]", error);
+    return new NextResponse("Internal error", { status: 500 });
   }
 }

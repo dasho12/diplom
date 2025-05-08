@@ -32,7 +32,10 @@ export default function Home() {
   const [noMatches, setNoMatches] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAnalysisComplete = (analysisResult: string, matches: JobMatch[] | null) => {
+  const handleAnalysisComplete = (
+    analysisResult: string,
+    matches: JobMatch[] | null
+  ) => {
     setAnalysis(analysisResult);
     if (matches) {
       setJobMatches(matches);
@@ -67,7 +70,7 @@ export default function Home() {
             <h2 className="text-2xl font-semibold text-slate-900 mb-6">
               CV-гээ байршуулах
             </h2>
-            <CVUpload 
+            <CVUpload
               onAnalysisStart={handleAnalysisStart}
               onAnalysisComplete={handleAnalysisComplete}
             />
@@ -81,8 +84,12 @@ export default function Home() {
                 {isLoading ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <div className="w-16 h-16 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin mb-4"></div>
-                    <p className="text-slate-600 text-lg font-medium">Шинжилгээ хийж байна...</p>
-                    <p className="text-slate-500 text-sm mt-2">Түр хүлээнэ үү</p>
+                    <p className="text-slate-600 text-lg font-medium">
+                      Шинжилгээ хийж байна...
+                    </p>
+                    <p className="text-slate-500 text-sm mt-2">
+                      Түр хүлээнэ үү
+                    </p>
                   </div>
                 ) : analysis ? (
                   <div className="prose prose-sm max-w-none text-slate-700">
@@ -94,7 +101,9 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 text-slate-500">
-                    <p>CV-гээ байршуулсны дараа шинжилгээний үр дүн энд харагдана</p>
+                    <p>
+                      CV-гээ байршуулсны дараа шинжилгээний үр дүн энд харагдана
+                    </p>
                   </div>
                 )}
               </div>
@@ -108,8 +117,12 @@ export default function Home() {
                 {isLoading ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <div className="w-16 h-16 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin mb-4"></div>
-                    <p className="text-slate-600 text-lg font-medium">Ажлын байруудыг хайж байна...</p>
-                    <p className="text-slate-500 text-sm mt-2">Түр хүлээнэ үү</p>
+                    <p className="text-slate-600 text-lg font-medium">
+                      Ажлын байруудыг хайж байна...
+                    </p>
+                    <p className="text-slate-500 text-sm mt-2">
+                      Түр хүлээнэ үү
+                    </p>
                   </div>
                 ) : noMatches ? (
                   <div className="p-6 bg-slate-50 rounded-xl">
@@ -117,12 +130,19 @@ export default function Home() {
                       Тохирох ажлын байр олдсонгүй
                     </h3>
                     <p className="text-slate-700">
-                      Таны CV-тэй тохирох ажлын байр олдсонгүй. Үүний шалтгаан нь:
+                      Таны CV-тэй тохирох ажлын байр олдсонгүй. Үүний шалтгаан
+                      нь:
                     </p>
                     <ul className="list-disc list-inside mt-3 text-slate-700 space-y-2">
-                      <li>Таны ур чадвар одоогийн ажлын шаардлагатай зүйлтэй тохирохгүй байж болно</li>
+                      <li>
+                        Таны ур чадвар одоогийн ажлын шаардлагатай зүйлтэй
+                        тохирохгүй байж болно
+                      </li>
                       <li>Одоогоор тохирох ажлын байр байхгүй байж болно</li>
-                      <li>CV-гээ илүү тохирох ур чадвар, туршлагаар шинэчлэхийг оролдоно уу</li>
+                      <li>
+                        CV-гээ илүү тохирох ур чадвар, туршлагаар шинэчлэхийг
+                        оролдоно уу
+                      </li>
                     </ul>
                   </div>
                 ) : jobMatches.length > 0 ? (
@@ -187,7 +207,10 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 text-slate-500">
-                    <p>CV-гээ байршуулсны дараа тохирох ажлын байрууд энд харагдана</p>
+                    <p>
+                      CV-гээ байршуулсны дараа тохирох ажлын байрууд энд
+                      харагдана
+                    </p>
                   </div>
                 )}
               </div>

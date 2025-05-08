@@ -37,7 +37,9 @@ export default function EmployerRegister() {
         throw new Error(error.message || "Something went wrong");
       }
 
-      router.push("/login?message=Registration successful! Please login.");
+      router.push(
+        "/employer/login?message=Registration successful! Please login."
+      );
     } catch (error) {
       setError(error instanceof Error ? error.message : "Something went wrong");
     } finally {

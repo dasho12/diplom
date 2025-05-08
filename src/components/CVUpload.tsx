@@ -28,7 +28,10 @@ interface CVUploadProps {
   onAnalysisComplete: (analysis: string, matches: JobMatch[] | null) => void;
 }
 
-export default function CVUpload({ onAnalysisStart, onAnalysisComplete }: CVUploadProps) {
+export default function CVUpload({
+  onAnalysisStart,
+  onAnalysisComplete,
+}: CVUploadProps) {
   const { data: session } = useSession();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
